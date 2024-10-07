@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFS Config Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col h-screen">
+        <!-- Banner -->
+        <header class="bg-blue-600 text-white p-4">
+            <h1 class="text-3xl font-bold">NFS Config Tool</h1>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Sidebar -->
+            <nav class="bg-gray-800 text-white w-64 p-4 space-y-4">
+                <button id="instructionsBtn" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Instructions
+                </button>
+                <button id="nfsServerBtn" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Configure NFS Server
+                </button>
+                <button id="nfsClientBtn" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Configure NFS Client
+                </button>
+                <button id="smbServerBtn" class="w-full bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                    Configure SMB Server
+                </button>
+                <button id="smbClientBtn" class="w-full bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                    Configure SMB Client
+                </button>
+                <button id="sshfsClientBtn" class="w-full bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                    Configure SSHFS Client
+                </button>
+            </nav>
+
+            <!-- Main content -->
+            <main class="flex-1 p-4 overflow-y-auto">
+                <div id="configurationForm" class="hidden">
+                    <h2 id="formTitle" class="text-2xl font-bold mb-4"></h2>
+                    <form id="configForm" class="space-y-4">
+                        <!-- Form fields will be dynamically added here -->
+                    </form>
+                    <button id="submitBtn" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Submit Configuration
+                    </button>
+                </div>
+
+                <div id="result" class="mt-8 hidden">
+                    <h2 class="text-2xl font-bold mb-4">Configuration Result</h2>
+                    <pre id="resultContent" class="bg-white p-4 rounded shadow"></pre>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
