@@ -156,42 +156,50 @@ configure_smb_client() {
 # Function to configure SSHFS Client
 configure_sshfs_client() {
     while true; do
-        # Get all inputs together
-        sshfs_details=$(dialog --title "SSHFS Client Configuration" \
-            --form "Enter SSHFS client details" 15 60 10 \
-            "Remote Host:" 1 1 "" 1 20 40 0 \
-            "Remote Path:" 2 1 "" 2 20 40 0 \
-            "Mount Point:" 3 1 "" 3 20 40 0 \
-            "User:" 4 1 "" 4 20 40 0 \
-            "Port (default: 22):" 5 1 "22" 5 20 40 0 \
-            "Identity File (optional):" 6 1 "" 6 20 40 0 \
-            "Other Options (optional):" 7 1 "-o allow_other,reconnect" 7 20 40 0 \
+        option=$(dialog --title "SSHFS Client Configuration" --menu "Choose an option:" 20 60 10 \
+            1 "Remote Host" \
+            2 "Remote Path" \
+            3 "Mount Point" \
+            4 "User" \
+            5 "Identity File (Private Key)" \
+            6 "Port" \
+            7 "Other Options" \
+            8 "Mount Command" \
+            9 "Unmount Command" \
+            10 "Exit" \
             3>&1 1>&2 2>&3)
 
-        # Exit if Cancel or Esc is pressed
-        [[ $? -ne 0 ]] && break
+        case $option in
+            1)  remote_host=$(dialog --inputbox "Enter the remote hostname or IP address:" 10 60 "" 3>&1 1>&2 2>&3) ;;
+            2)  remote_path=$(dialog --inputbox "Enter the remote path to mount:" 10 60 "" 3>&1 1>&2 2>&3) ;;
+            3)  mount_point=$(dialog --inputbox "Enter the local mount point:" 10 60 "" 3>&1 1>&2 2>&3) ;;
+            4)  user=$(dialog --inputbox "Enter the username for the remote host:" 10 60 "" 3>&1 1>&2 2>&3) ;;
+            5)  identity_file=$(dialog --inputbox "Enter the path to the identity file (private key):" 10 60 "" 3>&1 1>&2 2>&3) ;;
+            6)  port=$(dialog --inputbox "Enter the SSH port (default: 22):" 10 60 "22" 3>&1 1>&2 2>&3) ;;
+            7)  other_options=$(dialog --inputbox "Enter any other SSHFS options (e.g., -o allow_other,reconnect):" 10 60 "" 3>&1 1>&2 2>&3) ;;
+            8)
+                # Construct the mount command
+                mount_command="sshfs "
+                [[ -n "$user" ]] && mount_command+="$user@"
+                [[ -n "$remote_host" ]] && mount_command+="$remote_host:"
+                [[ -n "$remote_path" ]] && mount_command+="$remote_path "
+                [[ -n "$mount_point" ]] && mount_command+="$mount_point "
+                [[ -n "$identity_file" ]] && mount_command+="-o IdentityFile=$identity_file "
+                [[ -n "$port" && "$port" != "22" ]] && mount_command+="-o port=$port "
+                [[ -n "$other_options" ]] && mount_command+="-o $other_options"
 
-        # Split the details into variables
-        IFS=$'\n' read -r remote_host remote_path mount_point user port identity_file other_options <<< "$sshfs_details"
+                # Display the mount command
+                dialog --title "Mount Command" --msgbox "$mount_command" 15 60
+                ;;
+            9)
+                # Construct the unmount command
+                unmount_command="fusermount -u $mount_point"
 
-        # Build the SSHFS mount/unmount commands
-        mount_command="sshfs "
-        [[ -n "$user" ]] && mount_command+="$user@"
-        mount_command+="$remote_host:$remote_path $mount_point"
-        [[ -n "$identity_file" ]] && mount_command+=" -o IdentityFile=$identity_file"
-        [[ -n "$port" && "$port" != "22" ]] && mount_command+=" -o port=$port"
-        [[ -n "$other_options" ]] && mount_command+=" $other_options"
-
-        unmount_command="fusermount -u $mount_point"
-
-        # Show the mount and unmount command
-        dialog --title "SSHFS Configuration" --yesno "Mount Command:\n$mount_command\n\nUnmount Command:\n$unmount_command\n\nWould you like to execute the mount command now?" 15 70
-
-        if [[ $? -eq 0 ]]; then
-            # User chose 'Yes': Execute the mount command
-            eval "$mount_command" || dialog --msgbox "Failed to mount. Please check the provided parameters." 10 50
-        fi
-        break
+                # Display the unmount command
+                dialog --title "Unmount Command" --msgbox "$unmount_command" 15 60
+                ;;
+            10|"") break ;;
+        esac
     done
 }
 
