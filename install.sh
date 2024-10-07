@@ -153,15 +153,58 @@ configure_smb_client() {
     done
 }
 
+# Function to configure SSHFS Client
+configure_sshfs_client() {
+    while true; do
+        # Get all inputs together
+        sshfs_details=$(dialog --title "SSHFS Client Configuration" \
+            --form "Enter SSHFS client details" 15 60 10 \
+            "Remote Host:" 1 1 "" 1 20 40 0 \
+            "Remote Path:" 2 1 "" 2 20 40 0 \
+            "Mount Point:" 3 1 "" 3 20 40 0 \
+            "User:" 4 1 "" 4 20 40 0 \
+            "Port (default: 22):" 5 1 "22" 5 20 40 0 \
+            "Identity File (optional):" 6 1 "" 6 20 40 0 \
+            "Other Options (optional):" 7 1 "-o allow_other,reconnect" 7 20 40 0 \
+            3>&1 1>&2 2>&3)
+
+        # Exit if Cancel or Esc is pressed
+        [[ $? -ne 0 ]] && break
+
+        # Split the details into variables
+        IFS=$'\n' read -r remote_host remote_path mount_point user port identity_file other_options <<< "$sshfs_details"
+
+        # Build the SSHFS mount/unmount commands
+        mount_command="sshfs "
+        [[ -n "$user" ]] && mount_command+="$user@"
+        mount_command+="$remote_host:$remote_path $mount_point"
+        [[ -n "$identity_file" ]] && mount_command+=" -o IdentityFile=$identity_file"
+        [[ -n "$port" && "$port" != "22" ]] && mount_command+=" -o port=$port"
+        [[ -n "$other_options" ]] && mount_command+=" $other_options"
+
+        unmount_command="fusermount -u $mount_point"
+
+        # Show the mount and unmount command
+        dialog --title "SSHFS Configuration" --yesno "Mount Command:\n$mount_command\n\nUnmount Command:\n$unmount_command\n\nWould you like to execute the mount command now?" 15 70
+
+        if [[ $? -eq 0 ]]; then
+            # User chose 'Yes': Execute the mount command
+            eval "$mount_command" || dialog --msgbox "Failed to mount. Please check the provided parameters." 10 50
+        fi
+        break
+    done
+}
+
 # Main menu
 while true; do
-    choice=$(dialog --title "Network File System Configuration" --menu "Choose an option:" 15 60 5 \
+    choice=$(dialog --title "Network File System Configuration" --menu "Choose an option:" 15 60 7 \
         1 "Instructions" \
         2 "Configure NFS Server" \
         3 "Configure NFS Client" \
         4 "Configure SMB Server" \
         5 "Configure SMB Client" \
-        6 "Exit" \
+        6 "Configure SSHFS Client" \
+        7 "Exit" \
         3>&1 1>&2 2>&3)
 
     case $choice in
@@ -170,6 +213,7 @@ while true; do
         3) configure_nfs_client ;;
         4) configure_smb_server ;;
         5) configure_smb_client ;;
-        6|"") exit 0 ;;
+        6) configure_sshfs_client ;;
+        7|"") exit 0 ;;
     esac
 done
