@@ -10,7 +10,7 @@
     <div class="flex flex-col h-screen">
         <!-- Banner -->
         <header class="bg-blue-600 text-white p-4">
-            <h1 class="text-3xl font-bold">NFS Config Tool</h1>
+            <h1 class="text-3xl font-bold">NetFS-Tools</h1>
         </header>
 
         <div class="flex flex-1 overflow-hidden">
@@ -38,6 +38,17 @@
 
             <!-- Main content -->
             <main class="flex-1 p-4 overflow-y-auto">
+                <div id="instructions" class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Instructions</h2>
+                    <p class="mb-4">This application allows you to configure NFS and SMB servers and clients, as well as SSHFS clients.</p>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>Select a configuration option from the sidebar.</li>
+                        <li>Fill out the form with the required information.</li>
+                        <li>Click the "Submit Configuration" button to generate the configuration.</li>
+                        <li>Review the generated configuration in the results section.</li>
+                    </ol>
+                </div>
+
                 <div id="configurationForm" class="hidden">
                     <h2 id="formTitle" class="text-2xl font-bold mb-4"></h2>
                     <form id="configForm" class="space-y-4">
