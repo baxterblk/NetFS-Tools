@@ -2,6 +2,8 @@
 
 NFS Config Tool is a web-based application that helps you configure NFS and SMB servers and clients, as well as SSHFS clients. This tool is containerized using Docker for easy deployment and use.
 
+![netfs-tools](https://github.com/user-attachments/assets/2e03bda2-f824-4eb0-b72b-7ec144386eb4)
+
 ## Prerequisites
 
 - Docker
