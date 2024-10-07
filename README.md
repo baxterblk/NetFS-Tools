@@ -4,6 +4,9 @@
 
 This bash script provides an interactive, menu-driven interface for configuring NFS (Network File System) and SMB (Server Message Block) servers and clients, as well as SSHFS (SSH Filesystem) clients. It uses the `dialog` utility to create a user-friendly interface for managing various network file system configurations.
 
+<img width="935" alt="networkfs-gui" src="https://github.com/user-attachments/assets/7f245b0a-f090-4fc0-b8bc-eb59d6fd367c">
+
+
 ## Features
 
 - Interactive menu-driven interface
