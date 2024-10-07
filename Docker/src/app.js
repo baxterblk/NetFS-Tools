@@ -68,10 +68,13 @@ $(document).ready(function() {
     };
 
     function showInstructions() {
-        alert("This application allows you to configure NFS and SMB servers and clients, as well as SSHFS clients.\n\nSelect a configuration option from the sidebar, fill out the form, and submit to generate the configuration.");
+        $('#instructions').removeClass('hidden');
+        $('#configurationForm').addClass('hidden');
+        $('#result').addClass('hidden');
     }
 
     function showConfigurationForm(formType) {
+        $('#instructions').addClass('hidden');
         $('#formTitle').text(`Configure ${formType}`);
         const form = $('#configForm');
         form.empty();
@@ -125,6 +128,9 @@ $(document).ready(function() {
 
         return command;
     }
+
+    // Show instructions by default
+    showInstructions();
 
     $('#instructionsBtn').click(showInstructions);
     $('#nfsServerBtn').click(() => showConfigurationForm('nfsServer'));
